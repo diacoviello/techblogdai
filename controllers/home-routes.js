@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const sequelize = require("../config/config");
 const { Post, Comment, User } = require('../models/');
 
 // get all posts for homepage
@@ -19,8 +20,13 @@ router.get('/', async (req, res) => {
 // get single post
 router.get('/post/:id', async (req, res) => {
   try {
-    const postData = await Post.findByPk(
+    const postData = await Post.findByPk(req.params.id, {
       // TODO: YOUR CODE HERE
+      include: [User, {
+        model: Comment,
+        include: [User]
+      }]
+      }
     );
 
     if (postData) {
